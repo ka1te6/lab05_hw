@@ -23,24 +23,22 @@ Transaction::Transaction() : fee_(1) {}
 Transaction::~Transaction() {}
 
 bool Transaction::Make(Account& from, Account& to, int sum) {
+  std::cout << "Transaction::Make called: sum=" << sum << std::endl;
   if (from.id() == to.id()) throw std::logic_error("invalid action");
-
   if (sum < 0) throw std::invalid_argument("sum can't be negative");
-
   if (sum < 100) throw std::logic_error("too small");
-
   if (fee_ * 2 > sum) return false;
 
   Guard guard_from(from);
   Guard guard_to(to);
 
+  bool success = Debit(from, sum + fee_);
+  if (!success) return false;
+
   Credit(to, sum);
 
-  bool success = Debit(to, sum + fee_);
-  if (!success) to.ChangeBalance(-sum);
-
   SaveToDataBase(from, to, sum);
-  return success;
+  return true;
 }
 
 void Transaction::Credit(Account& accout, int sum) {
