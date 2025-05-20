@@ -10,11 +10,13 @@ set(CMAKE_C_FLAGS_DEBUG " -O0 --coverage")
 
 add_library(banking
     banking/Account.cpp
+    banking/Account.h
     banking/Transaction.cpp
+    banking/Transaction.h
 )
 
 target_include_directories(banking PUBLIC
-    
+    ${CMAKE_CURRENT_SOURCE_DIR}/banking
 )
 
 if(COVERAGE)
@@ -23,6 +25,7 @@ if(COVERAGE)
     target_link_libraries(banking PRIVATE gcov)
 endif()
 
+# Загрузка Google Test
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -30,14 +33,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+# Исполняемый файл тестов
 add_executable(banking_tests
     tests/AccountTest.cpp
     tests/TransactionTest.cpp
 )
 
 target_include_directories(banking_tests PRIVATE
-    
-    
+    ${CMAKE_CURRENT_SOURCE_DIR}/banking
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(banking_tests
