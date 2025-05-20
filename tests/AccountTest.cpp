@@ -1,6 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include "banking/Account.h"
+#include "Account.h"
 
 class MockAccount : public Account {
 public:
