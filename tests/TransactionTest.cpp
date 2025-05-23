@@ -20,14 +20,14 @@ TEST_F(TransactionTest, MakeCallsAccountMethodsCorrectly) {
     MockAccount from(1, 1000);
     MockAccount to(2, 500);
     Transaction transaction;
-
+    int fee = transaction.fee();
 
     EXPECT_CALL(from, GetBalance()).WillRepeatedly(testing::Return(1000));
     EXPECT_CALL(to, GetBalance()).WillRepeatedly(testing::Return(500));
 
     EXPECT_CALL(from, Lock()).Times(1);
     EXPECT_CALL(to, Lock()).Times(1);
-    EXPECT_CALL(from, ChangeBalance(-100)).Times(1);
+    EXPECT_CALL(from, ChangeBalance(-(100 + fee))).Times(1);
     EXPECT_CALL(to, ChangeBalance(100)).Times(1);
     EXPECT_CALL(from, Unlock()).Times(1);
     EXPECT_CALL(to, Unlock()).Times(1);
