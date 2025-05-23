@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include "banking/Account.h"
 #include "banking/Transaction.h"
+#include "Account.h"
+#include <gmock/gmock.h>
 
 class TransactionTest : public ::testing::Test {
 protected:
@@ -12,6 +14,43 @@ TEST_F(TransactionTest, MakeThrowsIfSameAccount) {
     Transaction transaction;
     account.Unlock();
     EXPECT_THROW(transaction.Make(account, account, 300), std::logic_error);
+}
+
+
+TEST_F(TransactionTest, MakeCallsAccountMethodsCorrectly) {
+
+    MockAccount from(1, 1000);
+    MockAccount to(2, 500);
+    Transaction transaction;
+
+    EXPECT_CALL(from, Lock()).Times(1);
+    EXPECT_CALL(to, Lock()).Times(1);
+
+    EXPECT_CALL(from, ChangeBalance(-100)).Times(1);
+    EXPECT_CALL(to, ChangeBalance(100)).Times(1);
+
+    EXPECT_CALL(from, Unlock()).Times(1);
+    EXPECT_CALL(to, Unlock()).Times(1);
+
+    bool result = transaction.Make(from, to, 100);
+    EXPECT_TRUE(result);
+}
+
+TEST_F(TransactionTest, MakeUnlocksOnFailure) {
+    MockAccount from(1, 50);
+    MockAccount to(2, 500);
+    Transaction transaction;
+    
+    EXPECT_CALL(from, Lock()).Times(1);
+    EXPECT_CALL(to, Lock()).Times(1);
+    EXPECT_CALL(from, ChangeBalance(testing::_)).Times(0);
+    EXPECT_CALL(to, ChangeBalance(testing::_)).Times(0);
+
+    EXPECT_CALL(from, Unlock()).Times(1);
+    EXPECT_CALL(to, Unlock()).Times(1);
+
+    bool result = transaction.Make(from, to, 100);
+    EXPECT_FALSE(result);
 }
 
 TEST_F(TransactionTest, MakeThrowsIfNegativeSum) {
