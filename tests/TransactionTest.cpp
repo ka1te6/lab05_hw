@@ -21,8 +21,9 @@ TEST_F(TransactionTest, MakeCallsAccountMethodsCorrectly) {
     MockAccount to(2, 500);
     Transaction transaction;
 
-    EXPECT_CALL(from, GetBalance()).WillRepeatedly(Return(1000));
-    EXPECT_CALL(to, GetBalance()).WillRepeatedly(Return(500));
+
+    EXPECT_CALL(from, GetBalance()).WillRepeatedly(testing::Return(1000));
+    EXPECT_CALL(to, GetBalance()).WillRepeatedly(testing::Return(500));
 
     EXPECT_CALL(from, Lock()).Times(1);
     EXPECT_CALL(to, Lock()).Times(1);
