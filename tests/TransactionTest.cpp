@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 #include "banking/Account.h"
 #include "banking/Transaction.h"
-#include "MockAccount.h" // Подключен мок
+#include "MockAccount.h" 
 
 class TransactionTest : public ::testing::Test {
 protected:
@@ -70,7 +70,7 @@ TEST_F(TransactionTest, MakeReturnsFalseIfFeeTooHigh) {
     Account from(1, 1000);
     Account to(2, 500);
     Transaction transaction;
-    transaction.set_fee(60); // fee * 2 = 120 > 100
+    transaction.set_fee(60); 
     from.Unlock();
     to.Unlock();
     EXPECT_FALSE(transaction.Make(from, to, 100));
@@ -84,20 +84,20 @@ TEST_F(TransactionTest, MakeSuccessWithMinimumSum) {
     to.Unlock();
     bool result = transaction.Make(from, to, 100);
     EXPECT_TRUE(result);
-    EXPECT_EQ(from.GetBalance(), 899); // 1000 - (100 + 1 fee)
-    EXPECT_EQ(to.GetBalance(), 600);   // 500 + 100
+    EXPECT_EQ(from.GetBalance(), 899); 
+    EXPECT_EQ(to.GetBalance(), 600);   
 }
 
 TEST_F(TransactionTest, MakeFailsWhenInsufficientFunds) {
-    Account from(1, 100); // Not enough for 100 + fee (101)
+    Account from(1, 100); 
     Account to(2, 500);
     Transaction transaction;
     from.Unlock();
     to.Unlock();
     bool result = transaction.Make(from, to, 100);
     EXPECT_FALSE(result);
-    EXPECT_EQ(from.GetBalance(), 100); // Should remain unchanged
-    EXPECT_EQ(to.GetBalance(), 500);   // Should remain unchanged
+    EXPECT_EQ(from.GetBalance(), 100); 
+    EXPECT_EQ(to.GetBalance(), 500);  
 }
 
 TEST_F(TransactionTest, FeeMethodsWork) {
