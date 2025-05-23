@@ -14,4 +14,4 @@ public:
     MOCK_METHOD(void, Unlock, (), (override));
 };
 
-#endif 
+#endif
