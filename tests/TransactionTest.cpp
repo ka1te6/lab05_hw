@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "banking/Account.h"
 #include "banking/Transaction.h"
-#include "Account.h"
-#include <gmock/gmock.h>
+#include "MockAccount.h" // Подключен мок
 
 class TransactionTest : public ::testing::Test {
 protected:
@@ -16,19 +16,15 @@ TEST_F(TransactionTest, MakeThrowsIfSameAccount) {
     EXPECT_THROW(transaction.Make(account, account, 300), std::logic_error);
 }
 
-
 TEST_F(TransactionTest, MakeCallsAccountMethodsCorrectly) {
-
     MockAccount from(1, 1000);
     MockAccount to(2, 500);
     Transaction transaction;
 
     EXPECT_CALL(from, Lock()).Times(1);
     EXPECT_CALL(to, Lock()).Times(1);
-
     EXPECT_CALL(from, ChangeBalance(-100)).Times(1);
     EXPECT_CALL(to, ChangeBalance(100)).Times(1);
-
     EXPECT_CALL(from, Unlock()).Times(1);
     EXPECT_CALL(to, Unlock()).Times(1);
 
@@ -45,7 +41,6 @@ TEST_F(TransactionTest, MakeUnlocksOnFailure) {
     EXPECT_CALL(to, Lock()).Times(1);
     EXPECT_CALL(from, ChangeBalance(testing::_)).Times(0);
     EXPECT_CALL(to, ChangeBalance(testing::_)).Times(0);
-
     EXPECT_CALL(from, Unlock()).Times(1);
     EXPECT_CALL(to, Unlock()).Times(1);
 
