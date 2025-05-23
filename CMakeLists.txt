@@ -15,6 +15,11 @@ add_library(banking
     banking/Transaction.h
 )
 
+include_directories(
+    ${CMAKE_SOURCE_DIR}/tests 
+    ${CMAKE_SOURCE_DIR}/banking
+)
+
 target_include_directories(banking PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/banking
 )
@@ -25,7 +30,7 @@ if(COVERAGE)
     target_link_libraries(banking PRIVATE gcov)
 endif()
 
-# Загрузка Google Test
+
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -33,7 +38,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Исполняемый файл тестов
+
 add_executable(banking_tests
     tests/AccountTest.cpp
     tests/TransactionTest.cpp
